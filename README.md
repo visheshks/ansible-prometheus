@@ -6,6 +6,10 @@ An ansible role which contains multiple exporters of prometheus for scrapping da
 - **[MySQL Exporter](https://github.com/prometheus/mysqld_exporter)**
 - **[Nginx Exporter](https://github.com/nginxinc/nginx-prometheus-exporter)**
 - **[Node Exporter](https://github.com/prometheus/node_exporter)**
+- **[Yarn Exporter](https://github.com/visheshks/Third-party-Exporters/raw/master/yarn-prometheus-exporter)**
+- **[Namenode Exporter](https://github.com/visheshks/Third-party-Exporters/raw/master/namenode/namenode_exporter)**
+- **[Zookeeper Exporter](https://github.com/visheshks/Third-party-Exporters/raw/master/zookeeper_exporter)**
+
 ## Requirments
 For **[MySQL Exporter](https://github.com/prometheus/mysqld_exporter)**, Create a user in mysql with these privileges
 ```sql
@@ -69,3 +73,9 @@ Values of **exporter_name** could be:-
 |**mongodb** | For MongoDB Exporter |
 |**nginx** | For Nginx Exporter |
 |**elasticsearch** | For Elasticsearch Exporter |
+|**yarn** | For Yarn Exporter(Hadoop) |
+|**zookeeper** | For Zookeeper Exporter(Hadoop) |
+|**namenode** | For Namenode Exporter |
+
+
+
