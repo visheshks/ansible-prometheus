@@ -1,0 +1,38 @@
+---
+- name: Add the user yarn-exporter
+  user:
+    name: prom
+    shell: /sbin/nologin
+
+
+- name: Downloading the binary file from git-hub repo
+  get_url:
+    url: "https://github.com/visheshks/Third-party-Exporters/raw/master/yarn-prometheus-exporter"
+    dest: "/tmp"
+    remote_src: yes
+    mode: 0755
+
+- name: Move Binary to appropriate path
+  copy:
+    src: "/tmp/yarn-prometheus-exporter"
+    dest: /usr/local/bin/
+    remote_src: yes
+    mode: 0555
+
+- name: Create Yarn Exporter Service
+  template:
+    src: "yarn-exporter.j2"
+    dest: /etc/systemd/system/yarn-exporter.service
+    mode: 0755
+- name: Daemon reload for Yarn Exporter
+  systemd:
+    name: yarn-exporter
+    daemon_reload: yes
+
+- name:  Enable Yarn Exporter service
+  systemd:
+    name: yarn-exporter
+    state: started
+    enabled: yes
+
+

@@ -1,0 +1,72 @@
+---
+- name: Adding User for Apache Exporter
+  user:
+    name: prometheus
+    shell: /sbin/nologin
+
+- name: creating directory structure - code and logs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+  with_items:
+    - /etc/prometheus
+    - /var/lib/prometheus
+    - /opt/packages/prometheus
+  become: yes  
+
+- name: Install prometheus
+  unarchive:
+    src: 'https://github.com/prometheus/prometheus/releases/download/v2.0.0/prometheus-2.0.0.linux-amd64.tar.gz'
+    dest: /opt/packages/prometheus/
+    remote_src: yes
+
+- name: copy binaries
+  copy: 
+    src: /opt/packages/prometheus/prometheus-2.0.0.linux-amd64/{{item.key}}
+    dest: "{{item.value}}"
+    owner: prometheus
+    group: prometheus
+  with_items:
+    - {key: 'prometheus',value: '/usr/local/bin'}
+    - {key: 'promtool',value: '/usr/local/bin'}
+    - {key: 'consoles/',value: '/etc/prometheus'}
+    - {key: 'console_libraries/',value: '/etc/prometheus'}
+  recurse: yes
+
+- name: delete leftovers
+  file:
+    path: /opt/packages/prometheus/prometheus-2.0.0.linux-amd64.tar.gz prometheus-2.0.0.linux-amd64
+    state: absent
+
+- name: prometheus.yml
+  template:
+    src: prometheus.conf
+    dest: /etc/prometheus/prometheus.yml
+
+- name: Changing ownership of yml file
+  file:
+    path: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
+  become: yes
+
+- name: Create Prometheus Service
+  template:
+    src: "prometheus.j2"
+    dest: /etc/systemd/system/prometheus.service
+    mode: 0755
+
+- name: Daemon reload for Prometheus
+  systemd:
+    name: prometheus
+    daemon_reload: yes
+
+- name: Start and Enable Node Prometheus service
+  systemd:
+    name: prometheus
+    state: started
+    enabled: yes
+
+

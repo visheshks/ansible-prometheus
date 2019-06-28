@@ -1,0 +1,13 @@
+[Unit]
+Description=Zookeeper Exporter
+After=network.target
+
+[Service]
+User=centos
+Group=centos
+Type=simple
+ExecStart=/usr/local/bin/zookeeper_exp
+
+[Install]
+WantedBy=multi-user.target
+

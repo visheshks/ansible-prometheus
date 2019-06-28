@@ -1,0 +1,19 @@
+[Unit]
+Description=Yarn Exporter
+After=network.target
+
+[Service]
+Environment="YARN_PROMETHEUS_LISTEN_ADDR=:9113"
+Environment="YARN_PROMETHEUS_ENDPOINT_SCHEME=http"
+Environment="YARN_PROMETHEUS_ENDPOINT_HOST=localhost"
+Environment="YARN_PROMETHEUS_ENDPOINT_PORT=8088"
+User=centos
+Group=centos
+Type=simple
+ExecStart=/usr/local/bin/yarn_exporter
+
+[Install]
+WantedBy=multi-user.target
+
+
+

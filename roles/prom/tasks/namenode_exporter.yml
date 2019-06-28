@@ -1,0 +1,44 @@
+---
+- name: Add the user yarn-exporter
+  user:
+    name: prom
+    shell: /sbin/nologin
+
+
+- name: Downloading the binary file from git-hub repo
+  get_url:
+    url: "https://github.com/visheshks/Third-party-Exporters/raw/master/namenode/namenode_exporter"
+    dest: "/tmp"
+    remote_src: yes
+    mode: 0755
+
+- name: Move Binary to appropriate path
+  copy:
+    src: "/tmp/name_exporter"
+    dest: /usr/local/bin/
+    remote_src: yes
+    mode: 0555
+
+- name: Create Namenode Exporter Service
+  template:
+    src: "namenode-exporter.j2"
+    dest: /etc/systemd/system/namenode-exporter.service
+    mode: 0755
+
+- name: Moving shell script file and giving permission
+  template:
+    src: "namenode_exporter.sh"
+    dest: /usr/local/bin/namenode_exporter.sh
+    mode: 0755
+
+- name: Daemon reload for Namenode Exporter
+  systemd:
+    name: namenode-exporter
+    daemon_reload: yes
+
+- name:  Enable Namenode Exporter service
+  systemd:
+    name: namenode-exporter
+    state: started
+    enabled: yes
+

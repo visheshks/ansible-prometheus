@@ -1,0 +1,43 @@
+---
+- name: Add the user node-exporter
+  user:
+    name: prom
+    shell: /sbin/nologin
+
+- name: Setting internal variables for convinience
+  set_fact:
+    base_url: "https://github.com/wrouesnel/postgres_exporter/releases/download/"
+
+- name: Download and Unarchive the Node Exporter
+  unarchive:
+    src: "{{ base_url }}/v{{ postgres_exporter_version }}/postgres_exporter_v{{ postgres_exporter_version }}_linux-amd64.tar.gz"
+    dest: "/tmp"
+    remote_src: yes
+    mode: 0755
+
+- name: Move Binary to appropriate path
+  copy:
+    src: "/tmp/postres_exporter-{{ postgres_exporter_version }}.linux-amd64/postgres_exporter"
+    dest: /usr/local/bin/
+    remote_src: yes
+    mode: 0555
+
+- name: Create Postgres Exporter Service
+  template:
+    src: "postgres-exporter.j2"
+    dest: /etc/systemd/system/postgres-exporter.service
+    mode: 0755
+
+- name: Daemon reload for Postgres Exporter
+  systemd:
+    name: postgres-exporter
+    daemon_reload: yes
+
+- name:  Enable Postgres Exporter service
+  systemd:
+    name: postgres-exporter
+    state: started
+    enabled: yes
+                   
+                                                  1,3           Top
+
