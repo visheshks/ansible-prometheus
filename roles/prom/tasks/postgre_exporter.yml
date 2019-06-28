@@ -28,6 +28,12 @@
     dest: /etc/systemd/system/postgres-exporter.service
     mode: 0755
 
+- name: Moving shell script file and giving permission
+  template:
+    src: "postgres_exporter.sh"
+    dest: /usr/local/bin/postgres_exporter.sh
+    mode: 0755
+
 - name: Daemon reload for Postgres Exporter
   systemd:
     name: postgres-exporter
